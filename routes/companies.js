@@ -10,25 +10,25 @@ router.get("/", async function (req, res) {
   const results = await db.query(`
     SELECT code, name FROM companies`
   );
-
   res.json({ companies: results.rows })
 });
 
-router.get("/:code", async function (req, res, next) {
+router.get('/:code', async function(req, res, next) {
   try {
-    const code = req.params.code;
-    console.log(code);
-
-    const results = await db.query(
-      `SELECT * FROM companies
-      WHERE code=$1`, [code]);
-
-    return res.json(results.rows)
-
+    const companyResults = await db.query(
+      `SELECT *
+      FROM companies
+      WHERE code=$1`, [req.params.code]);
+    const invoiceResults = await db.query(
+      `SELECT *
+      FROM invoices 
+      WHERE comp_code=$1`, [companyResults.rows[0].code]
+    )
+    return res.json({ company: companyResults.rows, invoices: invoiceResults.rows });
   }
 
-  catch (err) {
-    return next(err)
+  catch(err) {
+    return next(err);
   }
 });
 
