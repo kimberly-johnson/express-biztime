@@ -4,8 +4,6 @@ const db = require("../db")
 const app = require("../app")
 const ExpressError = require("../expressError")
 
-const companies = [];
-
 router.get("/", async function (req, res) {
   const results = await db.query(`
     SELECT code, name FROM companies`
